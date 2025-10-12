@@ -1,5 +1,13 @@
 #include <iostream>   // std::cout, std::cin
+// we use std::cout and std::cin because we aren't using "using namespace std;"
+// if we were to have that line below our "includes", we'd only be using "cin" and "cout"
+// it is generally considered a bad practice because it can lead to unknownly creating naming conflicts which lead to undefined behavior, so try to not use it
 #include <cstring>    // std::strlen for char arrays
+// these are include statements
+// they tell the program that we'd like to add "libraries" (other programs and files having defined functions and helpers for us) to our program
+// such that we can use their functionalities
+
+
 
 // General note on syntax:
 // - A *statement* ends with a semicolon (;). Example: int x = 5;
@@ -54,7 +62,7 @@ double average(const int arr[], int length) {
     for (std::size_t i = 0; i < length; i++) {
         sum += arr[i];
     }
-    return sum / (double) length; // when dividing 2 integers, if we need the result to be a decimal, we need to "cast" one of them to that type
+    return sum / (double)length; // when dividing 2 integers, if we need the result to be a decimal, we need to "cast" one of them to that type
     // casting means that the compiler will interpret that variable having a different type other than the one it has (only for the given statement)
 }
 
@@ -151,6 +159,23 @@ int main() { // the entry point of the program - the operating system calls main
     const int DAYS_IN_WEEK = 7; // UPPER_CASE is a common naming style for constants.
     std::cout << "DAYS_IN_WEEK (const int) = " << DAYS_IN_WEEK << std::endl;
 
+    // example operators for usage between variables
+    // +, -, /, * (multiplication), % (modulo - division remainder), | (binary OR), & (binary AND), ^ (binary XOR), << (logical left shift), >> (logical right shift)
+    // these are to be used as binary operators, such as "var1 OPERATOR var2", and they can be combined in any way we'd like
+    // for each of those operators, we have a simplified variant for a special case, where we can use "OPERATOR="
+    // "a += b" <=> a = a + b; "a -= b" <=> a = a - b; and so on...
+    // for + and -, we have some additional special operators, "++" and "--" (unary)
+    // "++" increments the variable by 1, and "--" decrements it by 1
+    // "a--" <=> a -= 1 <=> a = a - 1;
+    // they have two forms, post-fixed and pre-fixed (meaning after or before the variable)
+    // in the pre-fixed variant, we have "++a", which tells the program to first increment a, then return its value
+    // in the post-fixed variant, we have "a++", which tells the program to first return the value of a, and after that increment its value in the background
+    // for example
+    int PreFix = 100;
+    int PostFix = 100;
+    std::cout << "++PreFix = " << ++PreFix << std::endl; // should print 101, since PreFix is firstly incremented then returned
+    std::cout << "PostFix++ = " << PostFix++ << std::endl; // should print 100, since PostFix was first returned and only after incremented
+    std::cout << "PostFix after increment = " << PostFix << std::endl;
     // --------------------------------------
     // 2 - static arrays
 
@@ -158,14 +183,14 @@ int main() { // the entry point of the program - the operating system calls main
     int numbers[5] = { 10, 20, 30, 40, 50 }; // indices: 0, 1, 2, 3, 4 (zero-based)
     // access by index:
     int first = numbers[0]; // first element
-    int last  = numbers[4]; // last element
+    int last = numbers[4]; // last element
     numbers[2] = 999; // modify element at index 2
 
-    std::cout << "numbers = "; 
+    std::cout << "numbers = ";
     std::cout << "[";
     for (int idx = 0; idx < 5; idx++) { // idx++ is equivalent to saying idx += 1 or idx = idx + 1
-        std::cout << arr[idx];
-        if (idx + 1 < length) { // even though single statements do not require { }, it is a good practice to always use them
+        std::cout << numbers[idx];
+        if (idx + 1 < 5) { // even though single statements do not require { }, it is a good practice to always use them
             std::cout << ", ";
         }
     }
@@ -175,8 +200,8 @@ int main() { // the entry point of the program - the operating system calls main
     // static char array (C-style string): ends with '\0' (null terminator)
     // double quotes produce a null-terminated char array automatically - they are required for strings
     char name[] = "Ada"; // name has 4 chars: 'A', 'd', 'a', '\0'
-    std::cout << "name (char array) = " << name 
-              << " (length without \\0 = " << std::strlen(name) << ")" << std::endl;
+    std::cout << "name (char array) = " << name
+        << " (length without \\0 = " << std::strlen(name) << ")" << std::endl;
 
     // 2D array example:
     int table[2][3] = { {1,2,3}, {4,5,6} };
@@ -191,6 +216,15 @@ int main() { // the entry point of the program - the operating system calls main
 
     int age = 17;
 
+    // IF INSTRUCTION
+    // Syntax: if (condition) { body_if_condition_true} else { body_if_condition_false }
+    // for choosing between two or more conditions, where only 1 needs to be true we use logical OR (||)
+    // for choosing between two or more conditions where all need to be true, we use logical AND (&&)
+    // we can combine these to create more complex ifs
+    // operators most commonly used in conditions and examples:
+    // <, <=, >, >=, == (equal), != (not equal), ! (not - negates the condition)
+    // if (variable) <=> if (variable == true) <=> if (variable != 0)
+    // if (!variable) <=> if (variable == false) <=> if (variable == 0) 
     // simple if: run a block only if the condition is true
     if (age < 18) {
         std::cout << "You are a minor" << std::endl;
@@ -199,7 +233,8 @@ int main() { // the entry point of the program - the operating system calls main
     // if-else: choose between two paths
     if (age >= 18) {
         std::cout << "Adult path executed" << std::endl;
-    } else {
+    }
+    else {
         std::cout << "Else path executed (not an adult)" << std::endl;
     }
 
@@ -207,29 +242,32 @@ int main() { // the entry point of the program - the operating system calls main
     int score = 85;
     if (score >= 90) {
         std::cout << "Grade: A" << std::endl;
-    } else if (score >= 80) {
+    }
+    else if (score >= 80) {
         std::cout << "Grade: B" << std::endl;
-    } else if (score >= 70) {
+    }
+    else if (score >= 70) {
         std::cout << "Grade: C" << std::endl;
-    } else {
+    }
+    else {
         std::cout << "Grade: below C" << std::endl;
     }
 
     // switch: select by exact value (works with integral/enum types and some others) - alternative for if-else if-else if....
     char command = 'h'; // imagine commands: 'h' = help, 'q' = quit, 'r' = run
     switch (command) {
-        case 'h': // execute when command == 'h'
-            std::cout << "Help selected" << std::endl;
-            break; // exit switch here
-        case 'r': // execute when command == 'r'
-            std::cout << "Run selected" << std::endl;
-            break;
-        case 'q': // execute when command == 'q'
-            std::cout << "Quit selected" << std::endl;
-            break;
-        default:
-            std::cout << "Unknown command" << std::endl; // execute when no cases match
-            break;
+    case 'h': // execute when command == 'h'
+        std::cout << "Help selected" << std::endl;
+        break; // exit switch here
+    case 'r': // execute when command == 'r'
+        std::cout << "Run selected" << std::endl;
+        break;
+    case 'q': // execute when command == 'q'
+        std::cout << "Quit selected" << std::endl;
+        break;
+    default:
+        std::cout << "Unknown command" << std::endl; // execute when no cases match
+        break;
     }
     // Note: leaving out 'break;' causes fallthrough into the next case, which we don't want.
 
@@ -262,7 +300,7 @@ int main() { // the entry point of the program - the operating system calls main
     // Syntax: do { body } while (condition);
     // - body runs at least once, because the condition is checked AFTER the body
     bool done = false;
-    int simulatedInputs[] = {0, 0, 1}; // 1 means " done"
+    int simulatedInputs[] = { 0, 0, 1 }; // 1 means " done"
     int idx = 0;
 
     std::cout << "do-while loop: ";
@@ -284,7 +322,7 @@ int main() { // the entry point of the program - the operating system calls main
     int sum = add(x, y); // when we call a function, we use ()
     std::cout << "add(" << x << ", " << y << ") = " << sum << std::endl;
 
-    int data[] = {10, 20, 30, 40};
+    int data[] = { 10, 20, 30, 40 };
     std::cout << "average([10,20,30,40]) = " << average(data, 4) << std::endl;
 
     std::cout << "Divider via void function:\n";
@@ -325,7 +363,7 @@ int main() { // the entry point of the program - the operating system calls main
     std::cout << "After swapByPointer, a = " << a << ", b = " << b << std::endl;
 
     // pointers and arrays:
-    int nums[] = {5, 10, 15};
+    int nums[] = { 5, 10, 15 };
     int* pArr = nums; // arrays "decay" to pointer to first element - for readability we prefer int* pArr = &nums[0];
     std::cout << "nums[0] via *(pArr) = " << *pArr << std::endl;
     std::cout << "nums[1] via *(pArr + 1) = " << *(pArr + 1) << " (pointer arithmetic)" << std::endl;
@@ -346,8 +384,8 @@ int main() { // the entry point of the program - the operating system calls main
     // 7.2 - enums example
 
     // using an unscoped enum (legacy):
-    LegacyDay d = WED; // Notice: we write WED (not LegacyDay::WED)
-    int d_as_int = d; // implicit conversion to int is allowed (pitfall)
+    LegacyDay legacyday = WED; // Notice: we write WED (not LegacyDay::WED)
+    int d_as_int = legacyday; // implicit conversion to int is allowed (pitfall)
     std::cout << "LegacyDay d = WED -> as int: " << d_as_int << std::endl;
 
     // using a scoped enum (modern, preferred):
@@ -356,20 +394,20 @@ int main() { // the entry point of the program - the operating system calls main
     // switch with scoped enum (cases use fully-qualified names).
     std::cout << "TrafficLight state: ";
     switch (tl) {
-        case TrafficLight::Red:    
-            std::cout << "Stop" << std::endl; 
-            break;
-        case TrafficLight::Yellow: 
-            std::cout << "Get ready" << std::endl;
-            break;
-        case TrafficLight::Green:  
-            std::cout << "Go" << std::endl;
-            break;
+    case TrafficLight::Red:
+        std::cout << "Stop" << std::endl;
+        break;
+    case TrafficLight::Yellow:
+        std::cout << "Get ready" << std::endl;
+        break;
+    case TrafficLight::Green:
+        std::cout << "Go" << std::endl;
+        break;
     }
 
     // if you need the underlying integer value, cast explicitly:
     std::cout << "TrafficLight::Red as int = "
-              << (int)(TrafficLight::Red) << "\n";
+        << (int)(TrafficLight::Red) << "\n";
 
     // Best practices:
     // - Prefer enum class for safety (names are scoped, no silent int conversions).
