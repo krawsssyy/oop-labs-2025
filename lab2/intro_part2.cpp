@@ -1,9 +1,16 @@
+#define _CRT_SECURE_NO_WARNINGS // for usage of strcpy, strcat
+// they are deprecated and visual studio doesn't let us compile without this
+// they are not to be used, but they have been shown here as examples
+// this has to be the first statement, such that no subsequent include directives somehow already import strcpy and overwrite this define directive
 #include <iostream> // std::cout, std::cin
 #include <string> // std::string
 #include <limits> // std::numeric_limits for robust ignore
+#include <cstring> // for C-string functions
+#include <cctype> // for character classification functions
+
 
 // --------------------------------------
-// 9.1 - structs
+// 10.1 - structs
 
 // struct: groups related data together
 // think of it as a "bundle" of variables that belong together, forming an object
@@ -30,7 +37,144 @@ struct Rectangle {
 
 int main() {
     // --------------------------------------
-    // 8.1 - basics of std::string
+    // 8.1 - working with char* arrays (C-style strings)
+    // C-strings are null-terminated character arrays (ASCIIZ)
+    // '\0' marks the end of the string - this is important, as functions won't otherwise know where the string ends
+
+    // string literal (stored in read-only memory - it represents a pointer, but is not in the heap and nor is it dynamically allocated)
+    // no de-allocation necessary
+    // it is const, therefore it cannot be modified after initialization
+    const char* literalStr = "Hello"; // points to "Hello\0" in memory
+    std::cout << "String literal: \"" << literalStr << "\"" << std::endl;
+
+    // character array (modifiable)
+    char greetingCharArr[10] = "Hi there"; // automatically adds '\0', size must be >= actual length + 1
+    std::cout << "Character array: \"" << greetingCharArr << "\"" << std::endl;
+
+    // explicitly showing the null terminator
+    char manual[6] = { 'H', 'e', 'l', 'l', 'o', '\0' }; // must include '\0'!
+    std::cout << "Manual initialization: \"" << manual << "\"" << std::endl;
+
+    // uninitialized array - always initialize before use!
+    char buffer[50]; // contains garbage values
+    buffer[0] = '\0'; // make it an empty string (good practice)
+    std::cout << "Empty buffer: \"" << buffer << "\" (length: " << strlen(buffer) << ")" << std::endl;
+
+    // --------------------------------------
+    // 8.2 - essential C-string functions
+
+    // strlen() - returns length (excludes '\0')
+    const char* sampleCharArr = "Programming";
+    std::size_t len = strlen(sampleCharArr);
+    std::cout << "strlen(\"" << sampleCharArr << "\"): " << len << std::endl;
+
+    // strcpy() - copy string (overwrites destination buffer with new data)
+    // NOTE: be careful with this variant, as it can lead to security vulnerabilities called a buffer overrun if the destionation is too small
+    // it doesn't check any bounds and can copy past the allocated buffer
+    char dest[20];
+    strcpy(dest, "Hello"); // copies "Hello\0" to dest
+    std::cout << "After strcpy: \"" << dest << "\"" << std::endl;
+
+    // strncpy() - safer copy with size limit (but has some quirks - may not add '\0', depending on how much you copy)
+    char safeDest[20];
+    strncpy(safeDest, "Hello World", 5); // copies only first 5 chars
+    safeDest[5] = '\0'; // manually add null terminator for safety
+    std::cout << "After strncpy (5 chars): \"" << safeDest << "\"" << std::endl;
+
+    // strcat() - concatenate strings
+    // NOTE: same as before, doesn't do any bound checks and can easily overrun the allocated buffer
+    char combined[30] = "Hello";
+    strcat(combined, " World"); // appends " World" to combined
+    std::cout << "After strcat: \"" << combined << "\"" << std::endl;
+
+    // strncat() - safer concatenate with size limit
+    char safeCombined[30] = "Hello";
+    strncat(safeCombined, " Beautiful World", 10); // appends at most 10 chars
+    std::cout << "After strncat (10 chars max): \"" << safeCombined << "\"" << std::endl;
+
+    // strcmp() - compare strings (returns 0 if equal, <0 if str1 < str2, >0 if str1 > str2)
+    // parses the strings and compares them lexicographically until '\0'
+    const char* strA = "apple";
+    const char* strB = "banana";
+    const char* strC = "apple";
+
+    std::cout << "strcmp(\"apple\", \"banana\"): " << strcmp(strA, strB) << " (negative, 'apple' < 'banana')" << std::endl;
+    std::cout << "strcmp(\"apple\", \"apple\"): " << strcmp(strA, strC) << " (zero, they're equal)" << std::endl;
+
+    // strncmp() - compare first n characters (same return values)
+    std::cout << "strncmp(\"apple\", \"apply\", 4): " << strncmp("apple", "apply", 4) << " (zero, first 4 chars match)" << std::endl;
+    // even though they differt at position 5, we only compare the first 4, therefore they are equal until that point
+
+    // --------------------------------------
+    // 8.3 - searching in C-strings
+
+    // strchr() - find first occurrence of character (returns pointer to the string from the first occurence onward or nullptr if not found)
+    const char* textToSearch = "Hello World";
+    const char* found = strchr(textToSearch, 'o');
+    if (found != nullptr) {
+        std::cout << "strchr found 'o' at position: " << (found - textToSearch) << std::endl;
+        // pointer arithmetic to get the offset
+        // since found is a pointer to a string, it holds a memory address
+        // since it is a pointer to somewhere in our "textToSearch" string, it is a bigger memory address
+        // their difference represents the offset of that character in our string (its position)
+        std::cout << "Remaining string from 'o': \"" << found << "\"" << std::endl;
+    }
+
+    // strrchr() - find last occurrence of character
+    const char* lastO = strrchr(textToSearch, 'o');
+    if (lastO != nullptr) {
+        std::cout << "strrchr found last 'o' at position: " << (lastO - textToSearch) << std::endl;
+    }
+
+    // strstr() - find first occurrence of substring (same return values as strchr)
+    const char* sentenceToSearch = "The quick brown fox jumps";
+    const char* substring = strstr(sentenceToSearch, "brown");
+    if (substring != nullptr) {
+        std::cout << "strstr found \"brown\" at position: " << (substring - sentenceToSearch) << std::endl;
+        std::cout << "Remaining string: \"" << substring << "\"" << std::endl;
+    }
+
+    // --------------------------------------
+    // 8.4 - tokenizing strings
+
+    // strtok() - split string by delimiters (MODIFIES original string!)
+    // NOTE: strtok is not thread-safe and has internal state
+    char data[] = "apple,banana,cherry"; // must only be a modifiable array, not const char*
+    const char* delimiters = ",";
+
+    std::cout << "Tokenizing \"" << data << "\" by comma:" << std::endl;
+    char* token = strtok(data, delimiters); // first call with string
+    while (token != nullptr) {
+        std::cout << "Token: \"" << token << "\"" << std::endl;
+        token = strtok(nullptr, delimiters); // subsequent calls use nullptr, as the rest was stored in the internal states of strtok
+    }
+    std::cout << "New data char* array: \"" << data << "\"" << std::endl;
+    // NOTE: original 'data' array is now modified! (commas replaced with '\0')
+
+    // example with multiple delimiters
+    char path[] = "usr/local/bin:include";
+    std::cout << "Tokenizing path with '/' and ':' delimiters:" << std::endl;
+    token = strtok(path, "/:");
+    while (token != nullptr) {
+        std::cout << "Token: \"" << token << "\"" << std::endl;
+        token = strtok(nullptr, "/:");
+    }
+
+    // --------------------------------------
+    // 8.5 - character classification
+
+    char ch = 'A';
+    // these work for singular characters
+    std::cout << "Character classification for '" << ch << "':" << std::endl;
+    std::cout << "isalnum: " << (isalnum(ch) ? "yes" : "no") << std::endl; // is alphanumeric (i.e. A-Z, a-z or 0-9)
+    std::cout << "isalpha: " << (isalpha(ch) ? "yes" : "no") << std::endl; // is letter (i.e. A-Z or a-z)
+    std::cout << "isdigit: " << (isdigit(ch) ? "yes" : "no") << std::endl; // is digit (0-9)
+    std::cout << "isupper: " << (isupper(ch) ? "yes" : "no") << std::endl; // is uppercase (A-Z)
+    std::cout << "islower: " << (islower(ch) ? "yes" : "no") << std::endl; // is lowercase (a-z)
+    std::cout << "tolower: '" << (char)tolower(ch) << "'" << std::endl; // converts to lowercase
+
+    // --------------------------------------
+    // 9.1 - basics of std::string
 
     // empty string
     std::string empty;
@@ -54,7 +198,7 @@ int main() {
     std::cout << "partial (first 3 chars of 'World'): \"" << partial << "\"" << std::endl;
 
     // --------------------------------------
-    // 8.2 - std::string operations
+    // 9.2 - std::string operations
 
     // concatenation with + operator
     std::string firstName = "Ada";
@@ -97,7 +241,7 @@ int main() {
     std::cout << "After word.at(0) = 'P': \"" << word << "\"" << std::endl;
 
     // --------------------------------------
-    // 8.3 - std::string common methods
+    // 9.3 - std::string common methods
 
     std::string sample = "  Hello World  ";
 
@@ -171,7 +315,7 @@ int main() {
     std::cout << "modern.c_str(): \"" << cStyle << "\" (type: const char*)" << std::endl;
 
     // --------------------------------------
-    // 8.5 - reading strings from input and final notes
+    // 9.5 - reading strings from input and final notes
 
     // using >> operator will reads until the first whitespace (space, tab, newline)
     // std::string name;
@@ -204,7 +348,7 @@ int main() {
     // Best practices: Whenever possible, use std::string.
 
     // --------------------------------------
-    // 9.2 - struct example
+    // 10.2 - struct example
 
     // structs are just like the regular data types we've seen (int, char, float etc..), just that they have a format which is defined by us
     // we can create arrays/matrices or whatever of structs, dynamic arrays, matrices or whatever of structs
@@ -243,8 +387,8 @@ int main() {
     // alice.age = 20;
     // alice.gpa = 3.8;
     // alice.isEnrolled = true;
-    std::cout << "Student " << alice.name << ", age " << alice.age << ", GPA " << alice.gpa 
-        << (alice.isEnrolled ? " is enrolled" : " is not enrolled.") << std::endl; // ternary operator needs to be wrapped in parantheses in here
+    std::cout << "Student " << alice.name << ", age " << alice.age << ", GPA " << alice.gpa
+        << (alice.isEnrolled ? " is enrolled" : " is not enrolled.") << std::endl; // ternary operator needs to be wrapped in parentheses in here
     // for the compiler to recognize it as a single statement and not panic
 
     Rectangle rect{ {0, 100}, {50, 0} };
