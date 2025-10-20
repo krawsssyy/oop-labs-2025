@@ -8,13 +8,22 @@ struct Student { // we define our student "object", to have a name, a dynamic ar
 	float* grades = nullptr; // it is always a good practice to initialize pointers
 	// in this case, we don't know yet the size, so we leave it at nullptr
 	// this avoids any undefined behaviour due to wrongly using an uninitialized pointer
-	float avg;
+	float avg = 0.0f; // initialize the average with 0 (initial value in a summation)
 };
 
 int main() {
+	int exitCode = 0;
 	int noStudents, noGrades;
 	std::cout << "Enter number of students: "; std::cin >> noStudents;
+	if (noStudents < 1) { // validate user input
+		std::cout << "Invalid number of students! The number must be bigger than 0." << std::endl;
+		return 1; // exit if the number of students is wrong
+	}
 	std::cout << "Enter number of grades: "; std::cin >> noGrades;
+	if (noGrades < 1) {
+		std::cout << "Invalid number of grade! The number must be bigger than 0." << std::endl;
+		return 1; // exit if the number of grades is wrong
+	}
 
 	Student* students = new Student[noStudents]; // declare the array of students as an array of students
 	// variables of struct type are declared and used just like variables of regular data types
@@ -28,10 +37,22 @@ int main() {
 		std::cout << "Enter student name for student " << i + 1 << " : ";
 		std::getline(std::cin >> std::ws, students[i].name); // reads the student's name with spaces included, and discard leftover '\n' from previous reads
 		students[i].grades = new float[noGrades]; // initialize grades dynamic array
-		students[i].avg = 0.0f; // initialize the average with 0 (initial value in a summation)
+
 		for (int j = 0; j < noGrades; j++) {
 			std::cout << "Enter grade " << j + 1 << " for student " << i + 1 << " : ";
 			std::cin >> students[i].grades[j];
+			if (students[i].grades[j] < 1.0f || students[i].grades[j] > 10.0f) {
+				std::cout << "Invalid student grade! Grades must be between 1 and 10" << std::endl;
+				exitCode = 1; // mark error state
+				goto CLEANUP;
+				// if we have reached a state where the grade is wrong, we terminate the program
+				// however, since we have allocated dynamic memory, we need a way to clean it up
+				// goto allows us to jump to various labels within our program, redirecting execution flow
+				// when we jump to CLEANUP, all code from here, up until where the label is defined IS NOT EXECUTED
+				// it is a very powerful tool and can easily mess up the logic of the program and cause horrible bugs
+				// one of the appropriate use-cases of "goto" is this, cleaning up memory after error states
+				// !! please be advised, only use goto in these situations, and only where it is absolutely necessary (exhaust all other options first)
+			}
 			students[i].avg += students[i].grades[j];
 		}
 		students[i].avg /= noGrades;
@@ -59,15 +80,20 @@ int main() {
 	std::cout << std::endl << std::fixed << std::setprecision(2) << "Student " << students[maxPos].name
 		<< " has the highest average grade: " << maxAvg << std::endl;
 
+CLEANUP: // this is called a label
+	// it is used to represent a specific place in the program, where we can make our code jump to, if needed
 	// correctly cleaning up our dynamically allocated variables
 	for (int i = 0; i < noStudents; i++) {
-		delete[] students[i].grades; // we need to manually de-allocate all dynamic data allocated inside our struct
-		// !!! it does not get de-allocated when we delete the dynamic array of the struct type
-		students[i].grades = nullptr; // making the pointers null, also a must!
+		if (students[i].grades) { // if the grades array was allocated <=> students[i].grades != nullptr
+			// we need to check for this since we don't know if we allocated the array or note, since we may error before allocating all arrays
+			delete[] students[i].grades; // we need to manually de-allocate all dynamic data allocated inside our struct
+			// !!! it does not get de-allocated when we delete the dynamic array of the struct type
+			students[i].grades = nullptr; // making the pointers null, also a must!
+		}
 	}
 
 	delete[] students; // cleanup for students array
 	students = nullptr;
 
-	return 0;
+	return exitCode;
 }
