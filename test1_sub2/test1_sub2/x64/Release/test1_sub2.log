@@ -1,0 +1,8 @@
+﻿  main.cpp
+  Generating code
+  Previous IPDB and IOBJ mismatch, fall back to full compilation.
+  All 94 functions were compiled because no usable IPDB/IOBJ from previous compilation was found.
+  Finished generating code
+  test1_sub2.vcxproj -> C:\Users\alex\Desktop\fac\materialeDoctorat\predare\labs oop 2025\labs\test1_sub2\x64\Release\test1_sub2.exe
+  'pwsh.exe' is not recognized as an internal or external command,
+  operable program or batch file.
