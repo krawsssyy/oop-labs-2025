@@ -69,10 +69,9 @@ class Patient {
 		// we use const + & to avoid copies of the object (and that is a requirement for the parameter)
 		// (only the "&" is required, to avoid copies, since we are defining the copy constructor, and not using the reference will make it make a copy of the parameter, entering an endless loop)
 		// const is optional, but is a good practice to avoid accidental changes
-		// NOTE: we still cannot do "Patient E = Patient(D);" or "Patient F = D;", since that will call what's called the assignment operator (operator= function)
-		// all operators are special functions in C++, and therefore have their own implementations
-		// since we haven't given our own custom variant, it will just perform a shallow copy of each element, and that's not good since we have dynamic arrays
-		// so just use "Patient G(D);" until we learn that operator and can finally do that
+		// NOTE: we can also now do "Patient E = Patient(D);" or "Patient F = D;"
+		// this is what's called copy-initialization, and even though it uses the assignment operator, it is not used, since the given object
+		// is not already defined (had it been, then the assignment operator would've been used and that is a no-no just yet)
 
 		Patient(const Patient& other): name(other.name), age(other.age), diagnosis(other.diagnosis), noValues(other.noValues) {
 			// we can still use the initialization list for the copy constructor
