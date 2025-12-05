@@ -1,0 +1,7 @@
+﻿  additional.cpp
+  main.cpp
+C:\Users\alex\Desktop\fac\materialeDoctorat\predare\labs oop 2025\labs\lab10\main.cpp(142,29): warning C4244: 'return': conversion from 'float' to 'int', possible loss of data
+  Generating Code...
+  lab10.vcxproj -> C:\Users\alex\Desktop\fac\materialeDoctorat\predare\labs oop 2025\labs\lab10\x64\Debug\lab10.exe
+  'pwsh.exe' is not recognized as an internal or external command,
+  operable program or batch file.
