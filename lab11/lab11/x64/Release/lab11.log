@@ -1,0 +1,10 @@
+﻿  main.cpp
+C:\Users\alex\Desktop\fac\materialeDoctorat\predare\labs oop 2025\labs\lab11\main.cpp(100,15): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
+  Generating code
+  3 of 173 functions ( 1.7%) were compiled, the rest were copied from previous compilation.
+    0 functions were new in current compilation
+    0 functions had inline decision re-evaluated but remain unchanged
+  Finished generating code
+  lab11.vcxproj -> C:\Users\alex\Desktop\fac\materialeDoctorat\predare\labs oop 2025\labs\lab11\x64\Release\lab11.exe
+  'pwsh.exe' is not recognized as an internal or external command,
+  operable program or batch file.
