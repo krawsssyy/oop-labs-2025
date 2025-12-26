@@ -1,0 +1,6 @@
+﻿  main.cpp
+C:\Users\alex\Desktop\fac\materialeDoctorat\predare\labs oop 2025\labs\hw11\main.cpp(110,14): warning C4244: 'argument': conversion from 'time_t' to 'unsigned int', possible loss of data
+C:\Users\alex\Desktop\fac\materialeDoctorat\predare\labs oop 2025\labs\hw11\main.cpp(220,17): warning C4244: 'initializing': conversion from 'std::streamoff' to 'int', possible loss of data
+  hw11.vcxproj -> C:\Users\alex\Desktop\fac\materialeDoctorat\predare\labs oop 2025\labs\hw11\x64\Debug\hw11.exe
+  'pwsh.exe' is not recognized as an internal or external command,
+  operable program or batch file.

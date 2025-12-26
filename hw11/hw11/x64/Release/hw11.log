@@ -1,0 +1,10 @@
+﻿  main.cpp
+C:\Users\alex\Desktop\fac\materialeDoctorat\predare\labs oop 2025\labs\hw11\main.cpp(112,14): warning C4244: 'argument': conversion from 'time_t' to 'unsigned int', possible loss of data
+C:\Users\alex\Desktop\fac\materialeDoctorat\predare\labs oop 2025\labs\hw11\main.cpp(228,17): warning C4244: 'initializing': conversion from 'std::streamoff' to 'int', possible loss of data
+  Generating code
+  Previous IPDB not found, fall back to full compilation.
+  All 204 functions were compiled because no usable IPDB/IOBJ from previous compilation was found.
+  Finished generating code
+  hw11.vcxproj -> C:\Users\alex\Desktop\fac\materialeDoctorat\predare\labs oop 2025\labs\hw11\x64\Release\hw11.exe
+  'pwsh.exe' is not recognized as an internal or external command,
+  operable program or batch file.
